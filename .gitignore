@@ -1,0 +1,8 @@
+build/
+build-*/
+*.idx
+*.idx.tmp
+bench-data/
+bench-results/
+.cache/
+compile_commands.json
