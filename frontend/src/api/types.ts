@@ -22,7 +22,7 @@ export interface SearchResponse {
     results: SearchResult[];
 }
 
-export interface DocumntDetail {
+export interface DocumentDetail {
     id: number;
     title: string;
     path: string;
@@ -115,15 +115,15 @@ export interface StatsResponse {
     };
 }
 
-export interface SearchParms {
-    build:BuildStats;
+export interface ReindexResponse {
+    build: BuildStats;
     persisted: boolean;
     persist_error?: string;
-}
-
-export interface SearchParms{
-    q:string;
-    rank:RankMode;
+  }
+  
+  export interface SearchParams {
+    q: string;
+    rank: RankMode;
     ext: string;
     page: number;
-}
+  }
