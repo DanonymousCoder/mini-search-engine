@@ -134,4 +134,14 @@ int main(int argc, char** argv) {
         std::cerr << "cannot start server: " << err << "\n";
         return 1;
     }
+
+    std::signal(SIGINT, on_signal);
+    std::signal(SIGTERM, on_signal);
+    std::signal(SIGPIPE, SIG_IGN);
+    std::cout << "listening on http://" << host << ":" << server.port() << "   (try /search?q=index)\n" << std::flush;
+
+    while (!g_stop) std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::cout << "shutting down\n";
+    server.stop();
+    return 0;
 }
