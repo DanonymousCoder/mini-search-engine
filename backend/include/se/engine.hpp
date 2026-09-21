@@ -1,3 +1,6 @@
+#include <unordered_map>
+#include <vector>
+#include "se/tokenizer.hpp"
 #pragma once
 #include <string>
 #include <cstdint>
@@ -29,16 +32,19 @@ namespace se
         uint32_t id;
         std::string filepath;
         size_t byte_size;
-    }
+    };
 
     class SearchEngine
     {
     public:
-        (const EningeConfig &cfg) : config_(cfg) {}
+        (const EngineConfig &cfg) : config_(cfg){};
 
         BuildStats build_from_directory(const std::string &dir_path, size_t workers);
 
     private:
         EngineConfig config_;
-    }
+
+        std::vector<Document> document_store_;
+        std::unordered_map<std::string, std::vector<uint32_t>> index_;
+    };
 }

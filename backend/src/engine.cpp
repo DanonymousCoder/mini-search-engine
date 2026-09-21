@@ -18,6 +18,7 @@ namespace se
             if (!entry.is_regular_file())
                 continue;
 
+            // Check extension
             std::string ext = entry.path().extension().string();
             if (ext != ".txt" && ext != ".md")
             {
@@ -25,9 +26,9 @@ namespace se
                 continue;
             }
 
-            std::string filepath = entry.path().string()
-                                       std::ifstream
-                                           file(filepath);
+            // Open file
+            std::string filepath = entry.path().string();
+            std::ifstream file(filepath);
 
             if (!file.is_open())
             {
@@ -49,7 +50,42 @@ namespace se
                 continue;
             }
 
-            document_store.push_back(Document{current_doc_id, filepa})
+            document_store.push_back(Document{current_doc_id, filepath, byte_count});
+
+            std::string full_content;
+            std::string line;
+            while (std::getline(file, line))
+            {
+                full_content += line + '\n';
+            }
+
+            if (full_content.empty())
+            {
+                stats.skipped_empty++;
+                continue;
+            }
+
+            document_store_.push_back(Document{current_doc_id, filepath, full_content.size()});
+
+            std::vector<std::string> tokens = Tokenizer::tokenize(full_content);
+
+            for (const std::string &token : tokens)
+            {
+                auto &posting_list = index_[token];
+                if (posting_list.empty() || posting_list.back() != current_doc_id)
+                {
+                    posting_list.push_back(current_doc_id);
+                    stats.postings++;
+                }
+            }
+
+            current_doc_id++;
+            stats.documents++;
+
+            std::cout << "[DEBUG] Ingested " << document_store.size() << " text files. \n";
         }
+
+        stats.unique_terms = index_.size();
+        return stats;
     }
 }
